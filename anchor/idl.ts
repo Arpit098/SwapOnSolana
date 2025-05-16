@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/Swap.json`.
  */
 export type Swap = {
-  "address": "CTdw25rSQUn5PBHnaGKkX9Q5yRgiiW6YdUJaUpQv2DZN",
+  "address": "Ff4uecTxr2Gsp81rBdE1D7sW9Hn6cfNutnfJEmwaaAyS",
   "metadata": {
     "name": "swap",
     "version": "0.1.0",
@@ -13,6 +13,58 @@ export type Swap = {
     "description": "Created with Anchor"
   },
   "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "btcMint"
+        },
+        {
+          "name": "ethMint"
+        },
+        {
+          "name": "solMint"
+        },
+        {
+          "name": "state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
     {
       "name": "makeOffer",
       "discriminator": [
@@ -36,6 +88,23 @@ export type Swap = {
         },
         {
           "name": "tokenMintB"
+        },
+        {
+          "name": "state",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "makerTokenAccountA",
@@ -195,11 +264,7 @@ export type Swap = {
           "type": "u64"
         },
         {
-          "name": "tokenAOffered",
-          "type": "u64"
-        },
-        {
-          "name": "tokenBWanted",
+          "name": "tokenAAmount",
           "type": "u64"
         }
       ]
@@ -240,6 +305,23 @@ export type Swap = {
           "relations": [
             "offer"
           ]
+        },
+        {
+          "name": "state",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "takerTokenAccountA",
@@ -524,6 +606,31 @@ export type Swap = {
         73,
         229
       ]
+    },
+    {
+      "name": "swapState",
+      "discriminator": [
+        118,
+        229,
+        237,
+        67,
+        28,
+        174,
+        19,
+        149
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "staleFeed",
+      "msg": "Price feed is stale"
+    },
+    {
+      "code": 6001,
+      "name": "invalidMint",
+      "msg": "Invalid token mint"
     }
   ],
   "types": [
@@ -549,12 +656,52 @@ export type Swap = {
             "type": "pubkey"
           },
           {
-            "name": "tokenAOffered",
+            "name": "tokenAAmount",
             "type": "u64"
           },
           {
-            "name": "tokenBWanted",
+            "name": "tokenBAmount",
             "type": "u64"
+          },
+          {
+            "name": "priceA",
+            "type": "f64"
+          },
+          {
+            "name": "priceB",
+            "type": "f64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "swapState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "btcMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "ethMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "solMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
           },
           {
             "name": "bump",
@@ -567,7 +714,7 @@ export type Swap = {
 };
 
 export const IDL: Swap={
-  "address": "CTdw25rSQUn5PBHnaGKkX9Q5yRgiiW6YdUJaUpQv2DZN",
+  "address": "Ff4uecTxr2Gsp81rBdE1D7sW9Hn6cfNutnfJEmwaaAyS",
   "metadata": {
     "name": "swap",
     "version": "0.1.0",
@@ -575,6 +722,58 @@ export const IDL: Swap={
     "description": "Created with Anchor"
   },
   "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "btc_mint"
+        },
+        {
+          "name": "eth_mint"
+        },
+        {
+          "name": "sol_mint"
+        },
+        {
+          "name": "state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
     {
       "name": "make_offer",
       "discriminator": [
@@ -598,6 +797,23 @@ export const IDL: Swap={
         },
         {
           "name": "token_mint_b"
+        },
+        {
+          "name": "state",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "maker_token_account_a",
@@ -757,11 +973,7 @@ export const IDL: Swap={
           "type": "u64"
         },
         {
-          "name": "token_a_offered",
-          "type": "u64"
-        },
-        {
-          "name": "token_b_wanted",
+          "name": "token_a_amount",
           "type": "u64"
         }
       ]
@@ -802,6 +1014,23 @@ export const IDL: Swap={
           "relations": [
             "offer"
           ]
+        },
+        {
+          "name": "state",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "taker_token_account_a",
@@ -1086,6 +1315,31 @@ export const IDL: Swap={
         73,
         229
       ]
+    },
+    {
+      "name": "SwapState",
+      "discriminator": [
+        118,
+        229,
+        237,
+        67,
+        28,
+        174,
+        19,
+        149
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "StaleFeed",
+      "msg": "Price feed is stale"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidMint",
+      "msg": "Invalid token mint"
     }
   ],
   "types": [
@@ -1111,12 +1365,52 @@ export const IDL: Swap={
             "type": "pubkey"
           },
           {
-            "name": "token_a_offered",
+            "name": "token_a_amount",
             "type": "u64"
           },
           {
-            "name": "token_b_wanted",
+            "name": "token_b_amount",
             "type": "u64"
+          },
+          {
+            "name": "price_a",
+            "type": "f64"
+          },
+          {
+            "name": "price_b",
+            "type": "f64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "btc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "eth_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "sol_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
           },
           {
             "name": "bump",

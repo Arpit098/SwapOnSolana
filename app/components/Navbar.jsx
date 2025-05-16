@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 const WalletMultiButtonDynamic = dynamic(
   () => import('@solana/wallet-adapter-react-ui').then((mod) => mod.WalletMultiButton),
-  { ssr: false } // Prevents server-side rendering
+  { ssr: false } 
 );
 const Navbar = () => {
     const { connection } = useConnection();

@@ -19,7 +19,6 @@ export default function SwapInterface() {
     const [tokenAddress1, setTokenAddress1] = useState("")
     const [amount1, setAmount1] = useState("")
     const [tokenAddress2, setTokenAddress2] = useState("")
-    const [amount2, setAmount2] = useState("")
     
     
     const handleSwap = async () => {
@@ -35,8 +34,6 @@ export default function SwapInterface() {
         if (!tokenAddress1 || !tokenAddress2) {
           throw new Error("Please enter token addresses for both tokens");
         }
-    
-        // Validate token addresses
         let tokenMintA, tokenMintB;
         try {
           tokenMintA = new PublicKey(tokenAddress1);
@@ -45,23 +42,20 @@ export default function SwapInterface() {
           throw new Error(`Invalid token address: ${addressError.message}`);
         }
     
-        // Generate a random ID
         const id = new BN(Math.floor(Math.random() * 1000000));
     
-        // Convert the id to little-endian bytes
         const idBytes = id.toArrayLike(Buffer, "le", 8);
     
         // Validate amounts
-        if (!amount1 || !amount2) {
-          throw new Error("Please enter amounts for both tokens");
+        if (!amount1) {
+          throw new Error("Please enter amounts of tokens");
         }
     
-        if (isNaN(Number(amount1)) || isNaN(Number(amount2))) {
-          throw new Error("Invalid input: amount1 or amount2 is not a number.");
+        if (isNaN(Number(amount1))) {
+          throw new Error("Invalid input: amount1 is not a number.");
         }
     
         const scaledAmount1 = new BN(Number(amount1) * (10 ** 9));
-        const scaledAmount2 = new BN(Number(amount2) * (10 ** 9));
     
         // Derive the PDA for the offer account
         const [offerPDA] = PublicKey.findProgramAddressSync(
@@ -72,7 +66,13 @@ export default function SwapInterface() {
           ],
           program.programId
         );
-    
+        
+        const [state] = PublicKey.findProgramAddressSync(
+          [
+            Buffer.from("state"), 
+          ],
+          program.programId
+        );
         // Get the associated token account for the maker (token_mint_a)
         const makerTokenAccountA = await anchor.utils.token.associatedAddress({
           mint: tokenMintA,
@@ -94,16 +94,16 @@ export default function SwapInterface() {
           vault: vault.toBase58(),
           id: id.toString(),
           scaledAmount1: scaledAmount1.toString(),
-          scaledAmount2: scaledAmount2.toString()
         });
     
         // Prepare transaction
         const transaction = await program.methods
-          .makeOffer(id, scaledAmount1, scaledAmount2)
+          .makeOffer(id, scaledAmount1)
           .accounts({
             maker: publicKey,
             tokenMintA,
             tokenMintB,
+            state,
             makerTokenAccountA,
             offer: offerPDA,
             vault,
@@ -212,17 +212,6 @@ export default function SwapInterface() {
                 value={tokenAddress2}
                 onChange={(e) => setTokenAddress2(e.target.value)}
                 className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="amount-2" className="text-sm text-gray-300">Amount 2</label>
-              <Input
-                id="amount-2"
-                type="number"
-                placeholder="0"
-                value={amount2}
-                onChange={(e) => setAmount2(e.target.value)}
-                className="bg-gray-700/50 border-gray-600 text-2xl text-white placeholder-gray-400"
               />
             </div>
   

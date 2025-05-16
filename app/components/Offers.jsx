@@ -5,7 +5,6 @@ import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import { program } from "../../anchor/setup"
-import * as anchor from "@coral-xyz/anchor"
 import { 
     TOKEN_PROGRAM_ID,
     getAssociatedTokenAddress,
@@ -41,15 +40,18 @@ export default function AvailableOffers() {
 
             try {
                 const accounts = await program.account.offer.all()
-                
+                console.log("Fetched accounts:", accounts)
                 const fetchedOffers = accounts.map((account) => ({
                     pubkey: account.publicKey.toString(),
                     id: account.account.id.toString(),
                     maker: account.account.maker.toString(),
                     tokenMintA: account.account.tokenMintA.toString(),
                     tokenMintB: account.account.tokenMintB.toString(),
-                    tokenAOffered: account.account.tokenAOffered.toString(),
-                    tokenBWanted: account.account.tokenBWanted.toString(),
+                    tokenAAmount: account.account.tokenAAmount.toString(),
+                    tokenBAmount: account.account.tokenBAmount.toString(),
+                    priceA: account.account.priceA,         // float, no toString()
+                    priceB: account.account.priceB,         // float, no toString()
+                    timestamp: account.account.timestamp.toString(),
                     bump: account.account.bump
                 }))
 
@@ -230,7 +232,7 @@ export default function AvailableOffers() {
                                 </p>
                                 <p className="text-sm font-medium text-gray-300 mt-2">Amount:</p>
                                 <p className="text-white text-lg font-medium">
-                                    {formatAmount(offer.tokenAOffered)}
+                                    {formatAmount(offer.tokenAAmount)}
                                 </p>
                             </div>
 
@@ -241,7 +243,7 @@ export default function AvailableOffers() {
                                 </p>
                                 <p className="text-sm font-medium text-gray-300 mt-2">Amount:</p>
                                 <p className="text-white text-lg font-medium">
-                                    {formatAmount(offer.tokenBWanted)}
+                                    {formatAmount(offer.tokenBAmount)}
                                 </p>
                             </div>
 
